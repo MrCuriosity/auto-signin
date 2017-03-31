@@ -75,10 +75,14 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 				baseUrl: baseUrl,
 				url: url,
 				jar: true,
-				followRedirect: false,
+				followRedirect: true,
 				headers: {
 					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-					'Referer': 'https://www.v2ex.com/mission/daily'
+					'Referer': 'https://www.v2ex.com/mission/daily',
+					'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+					'accept-encoding': 'gzip, deflate, sdch, br',
+					'accept-language': 'zh-CN,zh;q=0.8,en;q=0.6',
+					'cache-control': 'no-cache'
 				}
 			}, (err, res, body)=> {
 				if (err) {
@@ -86,7 +90,7 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 					reject(err)
 				}
 				console.log(res)
-				resolve(res.body.match(/的浏览器有一些奇奇怪怪的设置，请用一个干净安装的浏览器重试一下吧/)[0])
+				resolve(body)
 			})
 		})
 	})
