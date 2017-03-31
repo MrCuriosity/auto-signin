@@ -3,11 +3,48 @@
 <head>
 	<meta charset="UTF-8">
 	<title>auto-signin</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bulma/0.4.0/css/bulma.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/v2ex.css">
+	<script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.4/vue.min.js"></script>
 </head>
 <body>
-	<form action="">
-		<div><input type="text" placeholder="username"></div>
-		<div><input type="text" placeholder="password"></div>
-	</form>
+	<section class="hero is-success is-fullheight">
+	  	<div class="hero-body">
+	    	<div class="container">
+	      		<h1 class="title">
+	        		V2EX 签到
+	      		</h1>
+	      		<div class="field">
+	      		  <p class="control has-icon">
+	      		    <input class="input" type="text" placeholder="Username">
+	      		    <span class="icon is-small">
+	      		      <i class="fa fa-envelope"></i>
+	      		    </span>
+	      		  </p>
+	      		</div>
+	      		<div class="field">
+	      		  <p class="control has-icon">
+	      		    <input class="input" type="password" placeholder="Password">
+	      		    <span class="icon is-small">
+	      		      <i class="fa fa-lock"></i>
+	      		    </span>
+	      		  </p>
+	      		</div>
+	      		<div class="field">
+	      		  <p class="control">
+	      		    <button id="submit" class="button is-warning">
+	      		      submit
+	      		    </button>
+	      		  </p>
+	      		</div>
+	      		<h2 class="subtitle" id="response">
+	      			<p id="res_title"></p>
+	      			<p id="res_content"></p>
+	      		</h2>
+	    	</div>
+	  	</div>
+	</section>
+	<script type="text/javascript" src="/javascripts/v2ex.js"></script>
 </body>
 </html>

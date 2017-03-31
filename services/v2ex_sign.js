@@ -5,15 +5,18 @@ const config = require('../config.js')
 const baseUrl = config.baseUrl
 const headers = config.headers
 
-module.exports = function signin({ sign_site, daily_site }) {
+module.exports = function signin({ sign_site, daily_site, username, password }) {
 
-	new Promise((resolve, reject)=> {
+	return new Promise((resolve, reject)=> {
 		request(sign_site, (err, res, body)=> {
-			if (err) console.error(err)
+			if (err) {
+				console.error(err)
+				reject(err)
+			}
 			const $ = cheerio.load(body)
 			let data = {}
-			data[$('.sl[type="text"]').attr('name')] = 'aboutTime'
-			data[$('.sl[type="password"]').attr('name')] = '52readbook'
+			data[$('.sl[type="text"]').attr('name')] = username
+			data[$('.sl[type="password"]').attr('name')] = password
 			data['once'] = parseInt($('[name="once"]').val(), 10)
 			data['next'] = '/'
 			resolve(data)
@@ -35,7 +38,7 @@ module.exports = function signin({ sign_site, daily_site }) {
 				if (res.statusCode === 302) {
 					resolve(data.once)
 				} else {
-					reject(0)
+					reject('登录出错')
 				}
 			})
 		})
@@ -51,7 +54,10 @@ module.exports = function signin({ sign_site, daily_site }) {
 					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
 				}
 			}, (err, res, body)=> {
-				if (err) console.error(err)
+				if (err) {
+					console.error(err)
+					reject(err)
+				}
 				if (body.indexOf('每日登录奖励已领取') > -1) {
 					console.log('已领取')
 				} else {
@@ -63,19 +69,25 @@ module.exports = function signin({ sign_site, daily_site }) {
 	})
 	.then( url => {
 		console.log(url)
-		request({
-			method: 'GET',
-			baseUrl: baseUrl,
-			url: url,
-			jar: true,
-			followRedirect: true,
-			headers: {
-				'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-				'Referer': 'https://www.v2ex.com/mission/daily'
-			}
-		}, (err, res, body)=> {
-			if (err) console.error(err)
-			console.log(res)
+		return new Promise((resolve, reject)=> {
+			request({
+				method: 'GET',
+				baseUrl: baseUrl,
+				url: url,
+				jar: true,
+				followRedirect: false,
+				headers: {
+					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
+					'Referer': 'https://www.v2ex.com/mission/daily'
+				}
+			}, (err, res, body)=> {
+				if (err) {
+					console.error(err)
+					reject(err)
+				}
+				console.log(res)
+				resolve(res.body.match(/的浏览器有一些奇奇怪怪的设置，请用一个干净安装的浏览器重试一下吧/)[0])
+			})
 		})
 	})
 	.catch(e => console.error(e))
