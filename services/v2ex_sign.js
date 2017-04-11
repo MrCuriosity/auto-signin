@@ -1,14 +1,21 @@
-const request = require('request').defaults({ jar: true })
+let request = require('request')
 const cheerio = require('cheerio')
 const config = require('../config.js')
 
 const baseUrl = config.baseUrl
 const headers = config.headers
+const daily_headers = config.daily_headers
+request = request.defaults({ jar: true, baseUrl, followRedirect: true })
+request.debug = true
 
 module.exports = function signin({ sign_site, daily_site, username, password }) {
 
 	return new Promise((resolve, reject)=> {
-		request(sign_site, (err, res, body)=> {
+		request({
+			method: 'GET',
+			uri: sign_site,
+			headers: headers
+		}, (err, res, body)=> {
 			if (err) {
 				console.error(err)
 				reject(err)
@@ -19,6 +26,7 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 			data[$('.sl[type="password"]').attr('name')] = password
 			data['once'] = parseInt($('[name="once"]').val(), 10)
 			data['next'] = '/'
+			console.log('resolve username: %s password %s ', username, password)
 			resolve(data)
 		})
 	})
@@ -29,13 +37,13 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 				baseUrl: baseUrl,
 				url: '/signin',
 				form: data,
-				jar: true,
-				followRedirect: true,
 				headers: headers
 
 			}, (err, res, body)=> {
 				if (err) console.error(err)
 				if (res.statusCode === 302) {
+					console.log('login success, onceCode: %s', data.once)
+					// console.log('cookie: ', res)
 					resolve(data.once)
 				} else {
 					reject('登录出错')
@@ -48,12 +56,10 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 			request({
 				method: 'GET',
 				baseUrl: baseUrl,
-				url: '/mission/daily',
-				jar: true,
-				headers: {
-					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-				}
+				uri: '/mission/daily',
+				headers: headers
 			}, (err, res, body)=> {
+				// console.log(body)
 				if (err) {
 					console.error(err)
 					reject(err)
@@ -72,18 +78,10 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 		return new Promise((resolve, reject)=> {
 			request({
 				method: 'GET',
-				baseUrl: baseUrl,
-				url: url,
-				jar: true,
+				baseUrl: 'http://v2ex.com',
+				uri: url,
 				followRedirect: true,
-				headers: {
-					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-					'Referer': 'https://www.v2ex.com/mission/daily',
-					'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-					'accept-encoding': 'gzip, deflate, sdch, br',
-					'accept-language': 'zh-CN,zh;q=0.8,en;q=0.6',
-					'cache-control': 'no-cache'
-				}
+				headers: daily_headers
 			}, (err, res, body)=> {
 				if (err) {
 					console.error(err)

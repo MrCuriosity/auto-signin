@@ -4,17 +4,28 @@ document.addEventListener('DOMContentLoaded', ()=> {
 		let str = ''
 		if (Object.prototype.toString.call(json) !== '[object Object]') {
 			console.error('参数必须是json格式')
-			return null
+			return null;
 		} else {
 			var s = Object.keys(json).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(json[key])}&`).join('')
-			return s.slice(0, s.length - 1)
+			return s.slice(0, s.length - 1);
 		}
 	}
 
-	$('#submit').addEventListener('click', e => {
+	$('input.username').addEventListener('keypress', e => onKeyPress(e))
+	$('input.password').addEventListener('keypress', e => onKeyPress(e))
+	$('#submit').addEventListener('click', e => fetchApi())
+
+	var onKeyPress = e => {
+		console.log(e)
+		if (!!e.keyCode && e.keyCode === 13) {
+			fetchApi()
+		}
+	}
+	var fetchApi = ()=> {
 		const username = $('[placeholder="Username"]').value
 		const password = $('[placeholder="Password"]').value
-		
+		if (!username || !password || !username.trim() || !password.trim()) return;
+
 		fetch('/daily/v2ex', {
 			method: 'POST',
 			headers: {
@@ -40,8 +51,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 			$('#res_content').innerHTML = reason
 		})
 		.catch( e => console.error(e))
-	})
-
+	}
 })
 
 
