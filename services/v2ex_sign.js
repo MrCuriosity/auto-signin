@@ -38,12 +38,11 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 				url: '/signin',
 				form: data,
 				headers: headers
-
 			}, (err, res, body)=> {
 				if (err) console.error(err)
+				console.log(body)
 				if (res.statusCode === 302) {
 					console.log('login success, onceCode: %s', data.once)
-					// console.log('cookie: ', res)
 					resolve(data.once)
 				} else {
 					reject('登录出错')
@@ -69,6 +68,16 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 				} else {
 					console.log('未领取')
 					resolve(body.match(/\/mission\/daily\/redeem\?once=\d+/)[0])
+					// 
+					// let url = body.match(/\/mission\/daily\/redeem\?once=\d+/)[0]
+					// request({
+					// 	method: 'GET',
+					// 	uri: url,
+					// 	followRedirect: false,
+					// 	headers: daily_headers
+					// }, (err, res, body)=> {
+					// 	console.log(res)
+					// })
 				}
 			})
 		})
@@ -78,9 +87,7 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 		return new Promise((resolve, reject)=> {
 			request({
 				method: 'GET',
-				baseUrl: 'http://v2ex.com',
 				uri: url,
-				followRedirect: true,
 				headers: daily_headers
 			}, (err, res, body)=> {
 				if (err) {
