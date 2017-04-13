@@ -5,6 +5,7 @@ const config = require('../config.js')
 const baseUrl = config.baseUrl
 const headers = config.headers
 const daily_headers = config.daily_headers
+const signin_headers = config.signin_headers
 request = request.defaults({ jar: true, baseUrl, followRedirect: true })
 request.debug = true
 
@@ -13,21 +14,34 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 	return new Promise((resolve, reject)=> {
 		request({
 			method: 'GET',
-			uri: sign_site,
-			headers: headers
+			uri: ''
 		}, (err, res, body)=> {
-			if (err) {
-				console.error(err)
-				reject(err)
+			if (err) console.error(err)
+			if (res.statusCode === 200) {
+				resolve()
 			}
-			const $ = cheerio.load(body)
-			let data = {}
-			data[$('.sl[type="text"]').attr('name')] = username
-			data[$('.sl[type="password"]').attr('name')] = password
-			data['once'] = parseInt($('[name="once"]').val(), 10)
-			data['next'] = '/'
-			console.log('resolve username: %s password %s ', username, password)
-			resolve(data)
+		})
+	})
+	.then(()=> {
+		return new Promise((resolve, reject)=> {
+			request({
+				method: 'GET',
+				uri: sign_site,
+				headers: headers
+			}, (err, res, body)=> {
+				if (err) {
+					console.error(err)
+					reject(err)
+				}
+				const $ = cheerio.load(body)
+				let data = {}
+				data[$('.sl[type="text"]').attr('name')] = username
+				data[$('.sl[type="password"]').attr('name')] = password
+				data['once'] = parseInt($('[name="once"]').val(), 10)
+				data['next'] = '/'
+				console.log('resolve username: %s password %s ', username, password)
+				resolve(data)
+			})
 		})
 	})
 	.then( data => {
@@ -35,7 +49,7 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 			request({
 				method: 'POST',
 				baseUrl: baseUrl,
-				url: '/signin',
+				uri: '/signin',
 				form: data,
 				headers: headers
 			}, (err, res, body)=> {
@@ -68,16 +82,6 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 				} else {
 					console.log('未领取')
 					resolve(body.match(/\/mission\/daily\/redeem\?once=\d+/)[0])
-					// 
-					// let url = body.match(/\/mission\/daily\/redeem\?once=\d+/)[0]
-					// request({
-					// 	method: 'GET',
-					// 	uri: url,
-					// 	followRedirect: false,
-					// 	headers: daily_headers
-					// }, (err, res, body)=> {
-					// 	console.log(res)
-					// })
 				}
 			})
 		})

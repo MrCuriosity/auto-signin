@@ -6,8 +6,12 @@ module.exports = {
 	DAILY_SITE: 'www.v2ex.com/mission/daily',
 	headers: {
 		'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
-		'referer': 'https://www.v2ex.com/signin/',
-		'origin': 'https://www.v2ex.com/'
+		'referer': 'https://www.v2ex.com/signin'
+	},
+	signin_headers: {
+		'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+		'referer': 'https://www.v2ex.com/signin',
+		'origin': 'https://www.v2ex.com'
 	},
 	daily_headers: {
 		'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
