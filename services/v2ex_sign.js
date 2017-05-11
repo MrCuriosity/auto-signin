@@ -18,6 +18,7 @@ module.exports = function signin({ sign_site, daily_site, username, password }) 
 		}, (err, res, body)=> {
 			if (err) console.error(err)
 			if (res.statusCode === 200) {
+				console.log('index')
 				resolve()
 			}
 		})
