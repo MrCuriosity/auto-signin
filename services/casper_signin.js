@@ -46,7 +46,7 @@ casper
 })
 .thenOpen(SITE.mission, function() {
 	this.echo(this.getTitle())//V2EX › 日常任务
-	this.capture('misson_daily.png', {
+	this.capture(`Daily-${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-${(new Date()).getDate()}`, {
 		top: 0,
 		left: 0,
 		width: 1000,
@@ -62,7 +62,7 @@ casper
 })
 .then(function() {
 	this.wait(5000, function() {
-		this.capture('result.png', {
+		this.capture(`Result-${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-${(new Date()).getDate()}`, {
 			top: 0,
 			left: 0,
 			width: 1000,
