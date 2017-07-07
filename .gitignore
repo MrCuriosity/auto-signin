@@ -12,3 +12,6 @@
 
 # images
 **/*.png
+
+# config
+/services/config.js

@@ -1,9 +1,9 @@
-
+var config = require('./config.js')
 var casper = require('casper').create({
 	verbose: true,
 	logLevel: 'debug',
 	onPageInitialized: function(page) {
-		console.log('Initialized')
+		console.log('page loaded')
 	}
 });
 
@@ -12,6 +12,8 @@ var SITE = {
 	signin: 'https://www.v2ex.com/signin',
 	mission: 'https://www.v2ex.com/mission/daily'
 }
+var username = config.username
+var password = config.password
 
 casper
 /** index cookie */
@@ -19,21 +21,12 @@ casper
 
 .thenOpen(SITE.signin, function() {
 	this.wait(5000, function() {
-		var name = this.evaluate(function() {
+		var name = this.evaluate(function(username, password) {
 			__utils__.echo('—————————— on the signin page ——————————')
-			__utils__.echo(document.querySelector('[action="/signin"]'))
-			__utils__.echo('username: ' + document.querySelector('.sl[type="text"]').value + '\n')
-			__utils__.echo('password: ' + document.querySelector('.sl[type="password"]').value + '\n')
-			document.querySelector('.sl[type="text"]').setAttribute('value', 'aboutTime')
-			document.querySelector('.sl[type="password"]').setAttribute('value', '52readbook')
-			__utils__.echo('username: ' + document.querySelector('.sl[type="text"]').value + '\n')
-			__utils__.echo('password: ' + document.querySelector('.sl[type="password"]').value + '\n')
+			document.querySelector('.sl[type="text"]').setAttribute('value', username) // set your username
+			document.querySelector('.sl[type="password"]').setAttribute('value', password) // set your password
 			document.querySelector('[action="/signin"]').submit()
-			// this.fillSelectors('[action="/signin"]', {
-			// 	'.sl[type="text"]': 'aboutTime',
-			// 	'.sl[type="password"]': '52readbook'
-			// }, true)
-		})
+		}, username, password)
 	})
 })
 .then(function() {
@@ -46,7 +39,7 @@ casper
 })
 .thenOpen(SITE.mission, function() {
 	this.echo(this.getTitle())//V2EX › 日常任务
-	this.capture(`Daily-${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-${(new Date()).getDate()}`, {
+	this.capture('Daily-' + (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate() + '.png', {
 		top: 0,
 		left: 0,
 		width: 1000,
@@ -62,7 +55,7 @@ casper
 })
 .then(function() {
 	this.wait(5000, function() {
-		this.capture(`Result-${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-${(new Date()).getDate()}`, {
+		this.capture('Result-' + (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate() + '.png', {
 			top: 0,
 			left: 0,
 			width: 1000,
@@ -73,10 +66,5 @@ casper
 		})
 	})
 })
-// .thenOpen(SITE.mission, function() {
-// 	this.echo('签到页：' + this.evaluate(function() {
-// 		__utils__.echo(document.title)
-// 	}) )
-// })
 
 casper.run();
