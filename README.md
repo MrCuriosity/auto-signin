@@ -16,7 +16,8 @@
  */
 {
 	username: 'your_username',
-	password: 'your_password'
+	password: 'your_password',
+	imgPath: 'better a absolute path to save auto-sign result images'
 }
 
 ```
