@@ -14,6 +14,7 @@ var SITE = {
 }
 var username = config.username
 var password = config.password
+var imgPath = config.imgPath
 
 casper
 /** index cookie */
@@ -39,7 +40,7 @@ casper
 })
 .thenOpen(SITE.mission, function() {
 	this.echo(this.getTitle())//V2EX › 日常任务
-	this.capture('Daily-' + (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate() + '.png', {
+	this.capture(imgPath + 'Daily-' + (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate() + '.png', {
 		top: 0,
 		left: 0,
 		width: 1000,
@@ -55,7 +56,7 @@ casper
 })
 .then(function() {
 	this.wait(5000, function() {
-		this.capture('Result-' + (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate() + '.png', {
+		this.capture(imgPath + 'Result-' + (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate() + '.png', {
 			top: 0,
 			left: 0,
 			width: 1000,
